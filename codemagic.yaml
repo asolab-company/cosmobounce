@@ -46,6 +46,14 @@ workflows:
           set -e
           xcode-project use-profiles --project "Unity-iPhone.xcodeproj"
 
+      - name: Increment build number
+        script: |
+          set -e
+          LATEST_BUILD=$(app-store-connect get-latest-testflight-build-number "com.cosmobounce.game" || echo 1)
+          NEW_BUILD=$((LATEST_BUILD + 1))
+          echo "Setting CFBundleVersion to $NEW_BUILD"
+          agvtool new-version -all $NEW_BUILD
+
       - name: Build iOS ipa
         script: |
           set -e
